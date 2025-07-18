@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #1e1e2f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .calculator {
+      background: #2e2e3e;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      width: 320px;
+    }
+
+    .display {
+      background: #000;
+      color: #0f0;
+      padding: 15px;
+      font-size: 2rem;
+      text-align: right;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-number { background: #3b3b4f; color: #fff; }
+    .btn-operator { background: #ff9500; color: #fff; }
+    .btn-clear { background: #e63946; color: #fff; }
+    .btn-equal { background: #06d6a0; color: #000; grid-column: span 2; }
+
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button class="btn-clear" onclick="clearDisplay()">C</button>
+      <button class="btn-operator" onclick="append('/')">/</button>
+      <button class="btn-operator" onclick="append('*')">x</button>
+      <button class="btn-operator" onclick="append('-')">-</button>
+
+      <button class="btn-number" onclick="append('7')">7</button>
+      <button class="btn-number" onclick="append('8')">8</button>
+      <button class="btn-number" onclick="append('9')">9</button>
+      <button class="btn-operator" onclick="append('+')">+</button>
+
+      <button class="btn-number" onclick="append('4')">4</button>
+      <button class="btn-number" onclick="append('5')">5</button>
+      <button class="btn-number" onclick="append('6')">6</button>
+
+      <button class="btn-number" onclick="append('1')">1</button>
+      <button class="btn-number" onclick="append('2')">2</button>
+      <button class="btn-number" onclick="append('3')">3</button>
+
+      <button class="btn-number" onclick="append('0')">0</button>
+      <button class="btn-number" onclick="append('.')">.</button>
+      <button class="btn-equal" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let display = document.getElementById("display");
+    let currentInput = "";
+
+    function append(value) {
+      if (display.textContent === "0" && value !== ".") {
+        currentInput = value;
+      } else {
+        currentInput += value;
+      }
+      display.textContent = currentInput;
+    }
+
+    function clearDisplay() {
+      currentInput = "";
+      display.textContent = "0";
+    }
+
+    function calculate() {
+      try {
+        let result = eval(currentInput.replace('x', '*'));
+        display.textContent = result;
+        currentInput = result.toString();
+      } catch (error) {
+        display.textContent = "Error";
+        currentInput = "";
+      }
+    }
+
+    // Bonus: Keyboard support
+    document.addEventListener("keydown", function (e) {
+      const validKeys = "0123456789/*-+.";
+      if (validKeys.includes(e.key)) {
+        append(e.key);
+      } else if (e.key === "Enter") {
+        calculate();
+      } else if (e.key === "Backspace") {
+        currentInput = currentInput.slice(0, -1);
+        display.textContent = currentInput || "0";
+      } else if (e.key.toLowerCase() === "c") {
+        clearDisplay();
+      }
+    });
+  </script>
+</body>
+</html>
