@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title> Flower Gallery </title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script> 
+</head>
+<body style="background-color: rgb(247, 218, 238);">
+<h1>Flower Gallery</h1>
+
+<div class="filters">
+  <button onclick="filterImages('all')">All</button>
+  <button onclick="filterImages('rose')">Rose</button>
+  <button onclick="filterImages('lily')">Lily</button>
+  <button onclick="filterImages('tulip')">Tulip</button>
+</div>
+
+<div class="gallery" id="gallery">
+  <img src="img17.jpeg" alt="Tulip 1"  data-category="tulip">
+  <img src="img1.jpeg" alt="Rose 1"  data-category="rose">
+  <img src="img10.jpeg" alt="Lily 2"  data-category="lily">
+  <img src="img25.jpeg" alt="Rose 2"  data-category="rose">
+   <img src="img16.jpeg" alt="Lily 8"  data-category="lily">
+  <img src="img19.jpeg" alt="Rose 4"  data-category="rose">
+   <img src="img20.jpeg" alt="Tulip 4"  data-category="tulip">
+  <img src="img5.jpeg" alt="Rose 5"  data-category="rose">
+  <img src="img9.jpeg" alt="Lily 1"  data-category="lily">
+  <img src="img6.jpeg" alt="Rose 6"  data-category="rose">
+  <img src="img8.jpeg" alt="Rose 7"  data-category="rose">
+  <img src="img23.jpeg" alt="Tulip 7" data-category="tulip">
+  <img src="img24.jpeg" alt="Tulip 8" data-category="tulip">
+  <img src="img13.jpeg" alt="Lily 5"  data-category="lily">
+  <img src="img14.jpeg" alt="Lily 6"  data-category="lily">
+  <img src="img18.jpeg" alt="Tulip 2"  data-category="tulip">
+  <img src="img15.jpeg" alt="Lily 7"  data-category="lily">
+  <img src="img26.jpeg" alt="Tulip 3"  data-category="tulip">
+  <img src="img7.jpeg" alt="Rose 8"  data-category="rose">
+  <img src="img12.jpeg" alt="Lily 4"  data-category="lily">
+  <img src="img21.jpeg" alt="Tulip 5"  data-category="tulip">
+  <img src="img3.jpeg" alt="Rose 3"  data-category="rose">
+  <img src="img22.jpeg" alt="Tulip 6"  data-category="tulip">
+  <img src="img11.jpeg" alt="Lily 3"  data-category="lily">
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close-btn" onclick="closeLightbox()">×</button>
+  <button class="nav-btn prev-btn" onclick="showImage(currentIndex - 1)">❮</button>
+  <img id="lightbox-img" src="" alt="">
+  <button class="nav-btn next-btn" onclick="showImage(currentIndex + 1)">❯</button>
+</div>
+</body>
+</html>
