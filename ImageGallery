@@ -4,9 +4,84 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title> Flower Gallery </title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script> 
+
+  <!-- Embedded CSS -->
+  <style>
+    *{ 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+    }
+    body { 
+        font-family: Arial, sans-serif; 
+        background: #f9f9f9; 
+    }
+    h1 { 
+        text-align: center; 
+        padding: 20px; 
+        color: #4a4a4a; 
+    }
+    .filters { 
+        text-align: center; 
+        margin-bottom: 20px; 
+    }
+    .filters button {
+        padding: 10px 16px; 
+        margin: 5px;
+        border: none; 
+        background-color: #ff69b4;
+        color: white; 
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .filters button:hover { 
+        background-color: #ff1493; 
+    }
+    .gallery {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 15px;
+      padding: 20px;
+    }
+    .gallery img {
+      object-fit: cover; border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease, opacity 0.4s ease;
+      opacity: 1;
+    }
+    .gallery img.loaded { opacity: 1; }
+    .gallery img:hover { transform: scale(1.05); }
+    .lightbox {
+      display: none; position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      justify-content: center; align-items: center;
+      flex-direction: column; z-index: 9999;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .lightbox.show { display: flex; opacity: 1; }
+    .lightbox img {
+      max-width: 90%; max-height: 80%; border-radius: 10px;
+    }
+    .nav-btn, .close-btn {
+      position: absolute; font-size: 36px;
+      color: white; background: none; border: none;
+      cursor: pointer; user-select: none;
+    }
+    .close-btn { top: 20px; right: 30px; font-size: 40px; }
+    .prev-btn { left: 30px; top: 50%; transform: translateY(-50%); }
+    .next-btn { right: 30px; top: 50%; transform: translateY(-50%); }
+    @media (max-width: 600px) {
+      .gallery img { width: 100%; height: auto; }
+    }
+    .filters button.active {
+      background-color: #c71585; /* darker pink or any strong color */
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
+
 <body style="background-color: rgb(247, 218, 238);">
 <h1>Flower Gallery</h1>
 
@@ -22,9 +97,9 @@
   <img src="img1.jpeg" alt="Rose 1"  data-category="rose">
   <img src="img10.jpeg" alt="Lily 2"  data-category="lily">
   <img src="img25.jpeg" alt="Rose 2"  data-category="rose">
-   <img src="img16.jpeg" alt="Lily 8"  data-category="lily">
+  <img src="img16.jpeg" alt="Lily 8"  data-category="lily">
   <img src="img19.jpeg" alt="Rose 4"  data-category="rose">
-   <img src="img20.jpeg" alt="Tulip 4"  data-category="tulip">
+  <img src="img20.jpeg" alt="Tulip 4"  data-category="tulip">
   <img src="img5.jpeg" alt="Rose 5"  data-category="rose">
   <img src="img9.jpeg" alt="Lily 1"  data-category="lily">
   <img src="img6.jpeg" alt="Rose 6"  data-category="rose">
@@ -50,5 +125,91 @@
   <img id="lightbox-img" src="" alt="">
   <button class="nav-btn next-btn" onclick="showImage(currentIndex + 1)">❯</button>
 </div>
+
+<!-- Embedded JS -->
+<script>
+let lightbox = document.getElementById('lightbox');
+let lightboxImg = document.getElementById('lightbox-img');
+let gallery = document.getElementById('gallery');
+let currentIndex = 0;
+let visibleImages = [];
+
+window.onload = () => {
+  document.querySelectorAll('#gallery img').forEach((img) => {
+    img.addEventListener('load', () => img.classList.add('loaded'));
+
+    // Preload larger version
+    const preload = new Image();
+    preload.src = img.src.replace('_640.jpg', '_1280.jpg');
+  });
+
+  setupImageClickListeners();
+};
+
+function setupImageClickListeners() {
+  const allImages = document.querySelectorAll('#gallery img');
+  allImages.forEach((img) => {
+    img.addEventListener('click', () => {
+      // Get currently visible images
+      visibleImages = Array.from(document.querySelectorAll('#gallery img'))
+        .filter(i => i.style.display !== 'none');
+
+      // Set currentIndex based on clicked image
+      currentIndex = visibleImages.findIndex(i => i === img);
+
+      // Open lightbox
+      lightboxImg.src = img.src.replace('_640.jpg', '_1280.jpg');
+      lightbox.style.display = 'flex';
+      lightbox.classList.add('show');
+    });
+  });
+}
+
+function showImage(idx) {
+  if (visibleImages.length === 0) return;
+
+  // Stop navigation if out of bounds
+  if (idx < 0 || idx >= visibleImages.length) return;
+
+  currentIndex = idx;
+  const img = visibleImages[currentIndex];
+  lightboxImg.src = img.src.replace('_640.jpg', '_1280.jpg');
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('show');
+  setTimeout(() => lightbox.style.display = 'none', 300);
+}
+
+function filterImages(category) {
+  const allImages = document.querySelectorAll('#gallery img');
+  allImages.forEach(img => {
+    if (category === 'all' || img.dataset.category === category) {
+      img.style.display = 'inline';
+    } else {
+      img.style.display = 'none';
+    }
+  });
+
+  // Remove 'active' class from all buttons
+  document.querySelectorAll('.filters button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Add 'active' class to the clicked button
+  const buttons = document.querySelectorAll('.filters button');
+  buttons.forEach(btn => {
+    if (btn.textContent.toLowerCase() === category.toLowerCase()) {
+      btn.classList.add('active');
+    }
+    if (category === 'all' && btn.textContent.toLowerCase() === 'all') {
+      btn.classList.add('active');
+    }
+  });
+
+  // Re-setup click listeners after filtering
+  setupImageClickListeners();
+}
+</script>
 </body>
 </html>
